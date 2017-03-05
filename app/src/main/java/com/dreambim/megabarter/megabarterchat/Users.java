@@ -1,15 +1,18 @@
 package com.dreambim.megabarter.megabarterchat;
 
+import com.stfalcon.chatkit.commons.models.IUser;
+
 import java.io.Serializable;
 
 /**
  * Created by admin on 02.02.2017.
  */
 
-public class Users implements Serializable{
+public class Users implements Serializable, IUser{
     private String id;
     private String email;
     private String name;
+    private String avatar;
 
     public Users() {
     }
@@ -18,8 +21,9 @@ public class Users implements Serializable{
         this.id = id;
         this.email = email;
         this.name = name;
-
     }
+
+
 
     public String getId() {
         return id;
@@ -44,4 +48,8 @@ public class Users implements Serializable{
     public void setName(String name) {
         this.name = name;
     }
+
+    public String getAvatar() { return avatar; }
+
+    public void setAvatar(String avatar) { this.avatar = avatar; }
 }

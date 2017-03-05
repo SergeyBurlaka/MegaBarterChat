@@ -1,16 +1,20 @@
 package com.dreambim.megabarter.megabarterchat;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.google.firebase.database.Exclude;
+import com.google.firebase.database.ServerValue;
+import com.stfalcon.chatkit.commons.models.IMessage;
+import com.stfalcon.chatkit.commons.models.IUser;
 
-public class ChatMessage {
+import java.util.Date;
+
+public class ChatMessage implements IMessage{
 
     private String id;
     private String fromUID;
     private String toUID;
     private String text;
-    private Map<String, String> timeStamp = new HashMap<>();
-    private long date;
+    private long timeStamp;
+    private Users user;
 
     public ChatMessage() {
     }
@@ -19,7 +23,7 @@ public class ChatMessage {
         this.text = text;
         this.fromUID = fromUID;
         this.toUID = toUID;
-       // this.timeStamp=ServerValue.TIMESTAMP;
+
     }
 
     public String getId() {
@@ -46,6 +50,14 @@ public class ChatMessage {
         this.fromUID = fromUID;
     }
 
+    public void setUser(Users user){
+        this.user = user;
+    }
+
+    public IUser getUser(){
+        return user;
+    }
+
     public String getToUID() {
         return toUID;
     }
@@ -54,20 +66,19 @@ public class ChatMessage {
         this.toUID = toUID;
     }
 
-    /*@Exclude
-    public Long getTimeStampLong(){
+    public java.util.Map<String, String> getTimeStamp() {
+        return ServerValue.TIMESTAMP;
+    }
+
+    public Date getCreatedAt() {
+        return new Date(getTimeStampLong());
+    }
+
+    @Exclude
+    public Long getTimeStampLong() {
         return timeStamp;
     }
-
-    public Map getTimeStamp() {
-        return timeStamp;
+    public void setTimeStamp(Long timeStamp) {
+        this.timeStamp = timeStamp;
     }
-
-    public long getDate() {
-        return date;
-    }
-
-    public void setDate(long date) {
-        this.date = date;
-    }*/
 }

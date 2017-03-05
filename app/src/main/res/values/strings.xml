@@ -15,5 +15,5 @@
     <string name="firebase_status_fmt">Firebase User: %s</string>
     <string name="label_emailpassword">Email/Password Authentication</string>
 
-    <string name="type_msg">Type message</string>
+    <string name="hint_enter_a_message">Type a message…</string>
 </resources>
