@@ -9,6 +9,7 @@ import java.util.Date;
 
 public class ChatMessage implements IMessage{
 
+    private static final String TAG = "ChatMessage";
     private String id;
     private String fromUID;
     private String toUID;

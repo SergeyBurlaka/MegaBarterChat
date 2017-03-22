@@ -21,9 +21,8 @@ public class Users implements Serializable, IUser{
         this.id = id;
         this.email = email;
         this.name = name;
+        this.avatar = null;
     }
-
-
 
     public String getId() {
         return id;

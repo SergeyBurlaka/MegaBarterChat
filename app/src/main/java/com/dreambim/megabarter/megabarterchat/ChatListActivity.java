@@ -14,4 +14,10 @@ public class ChatListActivity extends SingleFragmentActivity {
         return new ChatListFragment();
 
     }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
 }
