@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "215437455953",
+    "firebase_url": "https://megabarterchat.firebaseio.com",
+    "project_id": "megabarterchat",
+    "storage_bucket": "megabarterchat.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:215437455953:android:0a866df66539e4e9",
+        "android_client_info": {
+          "package_name": "com.dreambim.megabarter.megabarterchat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "215437455953-kvm864t6tlvft06rf87ioa2j35o71vba.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZz31W8pa0kL0XVLVYekQOxQal1kC2v2s"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "215437455953-kvm864t6tlvft06rf87ioa2j35o71vba.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
