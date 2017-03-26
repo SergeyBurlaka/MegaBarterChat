@@ -9,6 +9,7 @@ import java.io.Serializable;
  */
 
 public class Users implements Serializable, IUser{
+
     private String id;
     private String email;
     private String name;

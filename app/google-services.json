@@ -1,27 +1,66 @@
 {
   "project_info": {
-    "project_number": "215437455953",
-    "firebase_url": "https://megabarterchat.firebaseio.com",
-    "project_id": "megabarterchat",
-    "storage_bucket": "megabarterchat.appspot.com"
+    "project_number": "441002581546",
+    "firebase_url": "https://recipeapp-961e3.firebaseio.com",
+    "project_id": "recipeapp-961e3",
+    "storage_bucket": "recipeapp-961e3.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:215437455953:android:0a866df66539e4e9",
+        "mobilesdk_app_id": "1:441002581546:android:7dbd01deca5a46dd",
         "android_client_info": {
-          "package_name": "com.dreambim.megabarter.megabarterchat"
+          "package_name": "com.recipe_app"
         }
       },
       "oauth_client": [
         {
-          "client_id": "215437455953-kvm864t6tlvft06rf87ioa2j35o71vba.apps.googleusercontent.com",
+          "client_id": "441002581546-pvhdfimis7i08vc5pe41fv9s127hsdfg.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCZz31W8pa0kL0XVLVYekQOxQal1kC2v2s"
+          "current_key": "AIzaSyAz6Ww6fHbpqIMu7tieEoi3IfFz4FK2lCQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:441002581546:android:58607e5bb914b2f6",
+        "android_client_info": {
+          "package_name": "com.google.firebase.samples.apps.friendlypix"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "441002581546-9s7joadnun8ar0e37tqemota8qs99duo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.google.firebase.samples.apps.friendlypix",
+            "certificate_hash": "1fa3564fd944f11931061c26207d12899f942e7a"
+          }
+        },
+        {
+          "client_id": "441002581546-pvhdfimis7i08vc5pe41fv9s127hsdfg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAz6Ww6fHbpqIMu7tieEoi3IfFz4FK2lCQ"
         }
       ],
       "services": {
@@ -32,10 +71,41 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "215437455953-kvm864t6tlvft06rf87ioa2j35o71vba.apps.googleusercontent.com",
+              "client_id": "441002581546-pvhdfimis7i08vc5pe41fv9s127hsdfg.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:441002581546:android:0a866df66539e4e9",
+        "android_client_info": {
+          "package_name": "com.dreambim.megabarter.megabarterchat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "441002581546-pvhdfimis7i08vc5pe41fv9s127hsdfg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAz6Ww6fHbpqIMu7tieEoi3IfFz4FK2lCQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
         },
         "ads_service": {
           "status": 2

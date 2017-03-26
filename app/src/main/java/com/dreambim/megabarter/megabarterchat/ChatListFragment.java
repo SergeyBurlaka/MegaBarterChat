@@ -21,6 +21,8 @@ import com.stfalcon.chatkit.messages.MessagesList;
 import com.stfalcon.chatkit.messages.MessagesListAdapter;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Map;
 
 /**
  * Created by admin on 29.01.2017.
@@ -41,16 +43,16 @@ public class ChatListFragment extends Fragment implements MessagesListAdapter.Se
     private FirebaseAuth mFirebaseAuth;
     private FirebaseUser mFirebaseUser;
 
-    private ArrayList<ChatMessage> ChatMessageList = new ArrayList<>();
+    private ArrayList<ChatMessage> chatMessageList = new ArrayList<>();
     private MessageInput input;
     private MessagesList messagesList;
     private MessagesListAdapter<ChatMessage> adapter;
 
     //ploho tak kak esli izvne k nim obrachatcia - vse lomaetcia
-   private int indexChild;
+    private int indexChild;
     private int index;
     private int selectionCount;
-
+    private long lastActive;
 
 
     @Override
@@ -62,15 +64,16 @@ public class ChatListFragment extends Fragment implements MessagesListAdapter.Se
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
 
         toUser = (Users) getActivity().getIntent().getSerializableExtra(USER_ID);
+
         currentUser = new Users(mFirebaseUser.getUid()
-                ,mFirebaseUser.getEmail()
-                ,mFirebaseUser.getDisplayName());
+                , mFirebaseUser.getEmail()
+                , mFirebaseUser.getDisplayName());
 
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.getSupportActionBar().setTitle(toUser.getName());
 
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
 
     @Override
@@ -103,8 +106,10 @@ public class ChatListFragment extends Fragment implements MessagesListAdapter.Se
 
         adapter = new MessagesListAdapter<>(currentUser.getId(), null);
         adapter.enableSelectionMode(this);
+        lastActive = new Date().getTime();
 
-        loadMessages();
+        //loadMessages();
+        loadMessagesOnStart();
         /*
         adapter.setLoadMoreListener(new MessagesListAdapter.OnLoadMoreListener() {
             @Override
@@ -120,107 +125,149 @@ public class ChatListFragment extends Fragment implements MessagesListAdapter.Se
 
     }
 
+    public void loadMessages() {
 
-    public void loadMessages(){
+        final String uid = mFirebaseUser.getUid();
 
-       final String uid = mFirebaseUser.getUid();
+        DatabaseReference refUid = FirebaseDatabase.getInstance()
+                .getReference(USER_MESSAGES_CHILD).child(uid).child(toUser.getId());
+        refUid
 
-       ChatMessageList.clear();
-       adapter.clear();
-     index = 0;
-
-
-
-       DatabaseReference refUid = FirebaseDatabase.getInstance()
-                    .getReference(USER_MESSAGES_CHILD).child(uid).child(toUser.getId());
-
-          refUid.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String prevChild) {
-
-                final String messageId = dataSnapshot.getKey();
-
-                if(prevChild == null){
-                  indexChild = 0;
-                } else {
-                  indexChild ++;
-                }
-
-                DatabaseReference messageRef = FirebaseDatabase.getInstance()
-                        .getReference(MESSAGES_CHILD).child(messageId);
-
-                messageRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                .addChildEventListener(new ChildEventListener() {
                     @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
+                    public void onChildAdded(DataSnapshot dataSnapshot, String prevChild) {
+                        final String messageId = dataSnapshot.getKey();
 
-                        ChatMessage message = dataSnapshot.getValue(ChatMessage.class);
-                        message.setId(messageId);
-                        if (message.getFromUID().contentEquals(toUser.getId())) {
-                            message.setUser(toUser);
-                        } else {
-                            message.setUser(currentUser);
-                        }
+                        DatabaseReference messageRef = FirebaseDatabase.getInstance()
+                                .getReference(MESSAGES_CHILD).child(messageId);
 
-                        ChatMessageList.add(index, message);
+                        messageRef
+                                .orderByChild("timeStamp")
+                                .startAt(lastActive)
+                                .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
 
-                        if(index == (indexChild - 1)){
-                            Log.d(MY_TAG, "index "+index+"indexChild "+indexChild);
-                            adapter.addToEnd(ChatMessageList, true);
+                                ChatMessage message = dataSnapshot.getValue(ChatMessage.class);
+                                if(message == null)return;
+                                message.setId(messageId);
+                                if (message.getFromUID().contentEquals(toUser.getId())) {
+                                    message.setUser(toUser);
+                                } else {
+                                    message.setUser(currentUser);
+                                }
 
-                        } else if(index == indexChild){
-                            adapter.addToStart(ChatMessageList.get(index), true);
-                        }
+                                adapter.addToStart(message, true);
+                            }
 
-                        index ++;
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+
+                        });
+
                     }
 
+                    @Override
+                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                        Log.d(TAG, "onChildChanged");
+
+                        //adapter.addToStart(mChatMessage, false);
+                    }
+
+                    @Override
+                    public void onChildRemoved(DataSnapshot dataSnapshot) {
+                        Log.d(TAG, "onChildRemoved");
+                    }
+
+                    @Override
+                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                        Log.d(TAG, "onChildMoved");
+                    }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-
+                        Log.d(TAG, "onCancelled");
                     }
 
                 });
+    }
 
-            }
+    public void loadMessagesOnStart() {
+        final String uid = mFirebaseUser.getUid();
+        chatMessageList.clear();
+        adapter.clear();
 
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                Log.d(TAG, "onChildChanged");
-
-                //adapter.addToStart(mChatMessage, false);
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-                Log.d(TAG, "onChildRemoved");
-            }
+        DatabaseReference refUid = FirebaseDatabase.getInstance()
+                .getReference(USER_MESSAGES_CHILD).child(uid).child(toUser.getId());
+        refUid.addListenerForSingleValueEvent(new ValueEventListener() {
 
             @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-                Log.d(TAG, "onChildMoved");
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                final Map<String, Object> messageIdList = (Map<String, Object>) dataSnapshot.getValue();
+                Log.d(MY_TAG, dataSnapshot.toString());
+
+                if (messageIdList == null) return;
+                final int totalLastMessages = messageIdList.size();
+                for (final String messageId : messageIdList.keySet()) {
+                    DatabaseReference messageRef = FirebaseDatabase.getInstance()
+                            .getReference(MESSAGES_CHILD).child(messageId);
+
+                    messageRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+
+                            ChatMessage message = dataSnapshot.getValue(ChatMessage.class);
+
+                            message.setId(messageId);
+                            if (message.getFromUID().contentEquals(toUser.getId())) {
+                                message.setUser(toUser);
+                            } else {
+                                message.setUser(currentUser);
+                            }
+
+                            Log.d(MY_TAG, message.getText());
+
+                            chatMessageList.add(message);
+
+                            if (totalLastMessages == chatMessageList.size()) {
+                                adapter.addToEnd(chatMessageList, true);
+                                loadMessages();
+                            }
+                            //adapter.addToStart(message, true);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+
+                    });
+
+                }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.d(TAG, "onCancelled");
-            }
 
+            }
         });
     }
 
     @Override
     public void onSelectionChanged(int count) {
         this.selectionCount = count;
-       // menu.findItem(R.id.action_delete).setVisible(count > 0);
+        // menu.findItem(R.id.action_delete).setVisible(count > 0);
     }
 
-    private void sendMessage(){
+
+    private void sendMessage() {
 
         String message = input.getInputEditText().getText().toString();
         //ChatMessage mChatMessage;
 
-        if(mFirebaseUser!= null && toUser != null) {
+        if (mFirebaseUser != null && toUser != null) {
             final ChatMessage chatMessage = new ChatMessage(message,
                     mFirebaseUser.getUid(),
                     toUser.getId());
