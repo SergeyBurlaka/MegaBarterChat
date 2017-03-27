@@ -9,8 +9,9 @@ import com.dreambim.megabarter.megabarterchat.pojo.Users;
  */
 
 abstract class AbstractChatPresenter<View extends MvpView> extends MvpPresenter<View> {
-    
+
     public abstract void sendMessage(Users toUser, String message);
 
     public abstract void loadMessagesOnStart(Users toUser);
+
 }

@@ -2,6 +2,7 @@ package com.dreambim.megabarter.megabarterchat.ui.chat;
 
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -25,15 +26,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
 
-/**
- * Created by admin on 29.01.2017.
- */
-
 public class ChatListFragment extends MvpAppCompatFragment
         implements ChatView, MessagesListAdapter.SelectionListener {
 
     @InjectPresenter
     ChatPresenter chatPresenter;
+
     private MessageInput mMessageInput;
     private MessagesList messagesList;
     private MessagesListAdapter<ChatMessage> adapter;
@@ -41,11 +39,13 @@ public class ChatListFragment extends MvpAppCompatFragment
     public static final String USER_ID = "user_id";
     AppCompatActivity myAppCompatActivity = null;
 
+    private static Bundle mBundleRecyclerViewState;
+    private String KEY_RECYCLER_STATE = "keyRecyclerListState";
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-
         toUser = (Users) getActivity().getIntent().getSerializableExtra(USER_ID);
 
         if (getActivity() instanceof AppCompatActivity) {
@@ -60,26 +60,25 @@ public class ChatListFragment extends MvpAppCompatFragment
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.fragment_chat_list, container, false);
         messagesList = (MessagesList) view.findViewById(R.id.messagesList);
-
-        adapter = new MessagesListAdapter<>(chatPresenter.getCurrentUser().getId(), null);
-        adapter.enableSelectionMode(this);
-        messagesList.setAdapter(adapter);
 
         if (savedInstanceState == null) {
             initMessagesRepository();
         }
-
         mMessageInput = (MessageInput) view.findViewById(R.id.input);
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(final View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        adapter = new MessagesListAdapter<>(chatPresenter.getCurrentUser().getId(), null);
+        adapter.enableSelectionMode(this);
+        messagesList.setAdapter(adapter);
 
         mMessageInput.setInputListener(new MessageInput.InputListener() {
             @Override
@@ -88,7 +87,6 @@ public class ChatListFragment extends MvpAppCompatFragment
                 return true;
             }
         });
-        return view;
     }
 
     private void initMessagesRepository() {
@@ -147,6 +145,22 @@ public class ChatListFragment extends MvpAppCompatFragment
         if (fragment != null && fragment instanceof DialogFragment) {
             DialogFragment dialog = (DialogFragment) fragment;
             dialog.dismiss();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mBundleRecyclerViewState = new Bundle();
+        mBundleRecyclerViewState.putParcelable(KEY_RECYCLER_STATE, messagesList.getLayoutManager().onSaveInstanceState());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // restore RecyclerView state
+        if (mBundleRecyclerViewState != null) {
+            messagesList.getLayoutManager().onRestoreInstanceState(mBundleRecyclerViewState.getParcelable(KEY_RECYCLER_STATE));
         }
     }
 }

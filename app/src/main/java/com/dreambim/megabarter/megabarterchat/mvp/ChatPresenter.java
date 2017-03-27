@@ -1,5 +1,7 @@
 package com.dreambim.megabarter.megabarterchat.mvp;
 
+import android.os.Bundle;
+
 import com.arellomobile.mvp.InjectViewState;
 import com.dreambim.megabarter.megabarterchat.data.FirebaseMessageRepositoryImplement;
 import com.dreambim.megabarter.megabarterchat.data.MessageCallback;
@@ -14,8 +16,12 @@ import java.util.TreeSet;
 
 @InjectViewState
 public class ChatPresenter extends AbstractChatPresenter<ChatView> implements MessageCallback {
-    
+
+    private static final String KEY_RECYCLER_STATE = "list state";
+
     private final FirebaseMessageRepositoryImplement mCountryRepository;
+
+    private Bundle mBundleRecyclerViewState;
 
     public ChatPresenter() {
         mCountryRepository = new FirebaseMessageRepositoryImplement();
